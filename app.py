@@ -71,7 +71,7 @@ def local_css():
             color: white !important;
         }
         </style>
-    """, unsafe_allow_safe_allowing=True)
+    """, unsafe_allow_html=True) # <- 이 부분 오타 수정 완료!
 
 # --- 기본 설정 ---
 st.set_page_config(page_title="HCM Grab Community", page_icon="🇻🇳", layout="wide")
@@ -83,11 +83,11 @@ local_css() # CSS 적용
 st.markdown("""
     <div class="main-header">
         <h1>🇻🇳 호치민 한인 통합 커뮤니티</h1>
-        <p> Grab처럼 빠르고 편리하게 필요한 정보를 찾으세요.</p>
+        <p>Grab처럼 빠르고 편리하게 필요한 정보를 찾으세요.</p>
     </div>
-""", unsafe_allow_safe_allowing=True)
+""", unsafe_allow_html=True) # <- 이 부분 오타 수정 완료!
 
-st.markdown('<div class="section-title">📱 필수 생활 앱 바로가기</div>', unsafe_allow_safe_allowing=True)
+st.markdown('<div class="section-title">📱 필수 생활 앱 바로가기</div>', unsafe_allow_html=True)
 col1, col2, col3, col4, col5 = st.columns(5)
 with col1:
     st.link_button("🛵 배달K (Hàn Quốc)", "https://www.deliveryk.com/", use_container_width=True)
@@ -103,12 +103,10 @@ with col5:
 st.divider()
 
 # ==========================================
-# 2. 추천 한인 시설 (데이터 대폭 추가)
+# 2. 추천 한인 시설
 # ==========================================
-st.markdown('<div class="section-title">🗺️ 주변 추천 한인 시설</div>', unsafe_allow_safe_allowing=True)
+st.markdown('<div class="section-title">🗺️ 주변 추천 한인 시설</div>', unsafe_allow_html=True)
 
-# 확장된 시설 데이터 (위도, 경도 포함)
-# 실제로는 이 데이터를 CSV나 Google Sheets에서 불러오는 것이 좋습니다.
 facility_data = [
     # 7군 푸미흥 (Phu My Hung)
     {"name": "명동칼국수", "category": "식당", "area": "7군 푸미흥", "address": "Sky Garden", "lat": 10.7314, "lon": 106.7055, "rating": "⭐⭐⭐⭐⭐"},
@@ -130,22 +128,16 @@ facility_data = [
 ]
 df = pd.DataFrame(facility_data)
 
-# 필터링 섹션
-c1, c2 = st.columns([1, 2])
-with c1:
-    search_area = st.multiselect("지역 선택", df['area'].unique(), default=df['area'].unique())
-with c2:
-    search_category = st.multiselect("카테고리 선택", df['category'].unique(), default=df['category'].unique())
+search_area = st.multiselect("지역 선택", df['area'].unique(), default=df['area'].unique())
+search_category = st.multiselect("카테고리 선택", df['category'].unique(), default=df['category'].unique())
 
 filtered_df = df[(df['area'].isin(search_area)) & (df['category'].isin(search_category))]
 
-# 지도 출력 (Grab Style로 크게)
 st.subheader(f"📍 위치 지도 ({len(filtered_df)}개 시설)")
 st.map(filtered_df, zoom=12, use_container_width=True)
 
-# 카드형 리스트 출력 (그랩느낌의 카드 레이아웃)
 st.subheader("📋 시설 목록")
-cols = st.columns(3) # 3열 카드 레이아웃
+cols = st.columns(3)
 
 for i, row in filtered_df.iterrows():
     with cols[i % 3]:
@@ -156,16 +148,15 @@ for i, row in filtered_df.iterrows():
                 <p>📍 {row['address']}</p>
                 <p>⭐ {row['rating']}</p>
             </div>
-        """, unsafe_allow_safe_allowing=True)
+        """, unsafe_allow_html=True) # <- 이 부분 오타 수정 완료!
 
 st.divider()
 
 # ==========================================
-# 3. 간편 커뮤니티 (Grab Feedback Style)
+# 3. 간편 커뮤니티
 # ==========================================
-st.markdown('<div class="section-title">💬 실시간 교민 광장</div>', unsafe_allow_safe_allowing=True)
+st.markdown('<div class="section-title">💬 실시간 교민 광장</div>', unsafe_allow_html=True)
 
-# 세션 상태 초기화
 if 'posts' not in st.session_state:
     st.session_state.posts = [
         {"user": "호치민라이프", "text": "푸미흥 스카이가든 근처 맛집 추천해주실 분 계신가요?", "time": "5분 전"},
@@ -173,7 +164,6 @@ if 'posts' not in st.session_state:
         {"user": "새내기", "text": "베트남 잘로(Zalo) 가입하는 방법 좀 알려주세요.", "time": "20분 전"},
     ]
 
-# 글쓰기 (Grab Feedback 입력창 느낌)
 with st.container():
     c1, c2 = st.columns([4, 1])
     with c1:
@@ -185,20 +175,16 @@ with st.container():
                 st.session_state.posts.insert(0, new_post)
                 st.rerun()
 
-# 댓글 목록 (Grab 리뷰 스타일 카드)
 for post in st.session_state.posts:
     st.markdown(f"""
         <div class="grab-card" style="padding: 1rem; margin-bottom: 0.5rem; border-left: 4px solid #00B14F;">
             <b>👤 {post['user']}</b> <span style="color: #999; font-size: 0.8rem;">({post['time']})</span>
             <p style="margin-top: 0.5rem; margin-bottom: 0;">{post['text']}</p>
         </div>
-    """, unsafe_allow_safe_allowing=True)
+    """, unsafe_allow_html=True) # <- 이 부분 오타 수정 완료!
 
-# ==========================================
-# Footer
-# ==========================================
 st.markdown("""
     <div style="text-align: center; margin-top: 3rem; color: #BBB;">
         © 2026 HCM Korean Grab Style Community. 🇻🇳
     </div>
-""", unsafe_allow_safe_allowing=True)
+""", unsafe_allow_html=True)
