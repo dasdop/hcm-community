@@ -6,7 +6,7 @@ import google.generativeai as genai  # <- 대문자 Google을 소문자 google�
 # --- 제미니 API 설정 ---
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    model = genai.GenerativeModel('gemini-pro')
+    model = genai.GenerativeModel('gemini-2.5-flash')
 else:
     model = None
 
