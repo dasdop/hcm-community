@@ -53,17 +53,15 @@ st.markdown("""
 tab1, tab2, tab3 = st.tabs(["🗺️ 주변 추천 시설", "🤖 AI 호치민 가이드", "💬 교민 광장"])
 
 # ==========================================
-# 탭 1: 추천 시설 데이터 (100개 수준 대량 데이터)
+# 탭 1: 추천 시설 데이터
 # ==========================================
 with tab1:
     st.markdown('<div class="section-title">🗺️ 주변 추천 한인 시설 (대형 데이터베이스)</div>', unsafe_allow_html=True)
     
-    # 100개 수준의 시설 데이터를 루프로 자동 생성 및 배치
     areas = ["7군 푸미흥", "2군 타오디엔", "1군 시내", "빈탄군(빈홈)", "기타 지역"]
     categories = ["식당", "카페/베이커리", "미용/스파", "병원/약국", "학원/교육", "마트/쇼핑"]
     
     raw_facilities = [
-        # 7군 푸미흥 주요 업소
         ("명동칼국수", "식당", "7군 푸미흥", "Sky Garden 3차", 10.7314, 106.7055, "⭐⭐⭐⭐⭐"),
         ("강남 바베큐", "식당", "7군 푸미흥", "Hung Vuong 2차", 10.7290, 106.7060, "⭐⭐⭐⭐"),
         ("서울 헤어살롱", "미용/스파", "7군 푸미흥", "Mi Khanh 1차", 10.7305, 106.7040, "⭐⭐⭐⭐⭐"),
@@ -74,28 +72,21 @@ with tab1:
         ("부산 자갈치 횟집", "식당", "7군 푸미흥", "Hung Gia 4", 10.7300, 106.7062, "⭐⭐⭐⭐"),
         ("본가 (Bongaa)", "식당", "7군 푸미흥", "Sky Garden 주변", 10.7311, 106.7049, "⭐⭐⭐⭐⭐"),
         ("유가네 닭갈비", "식당", "7군 푸미흥", "Hung Phuoc", 10.7325, 106.7070, "⭐⭐⭐⭐"),
-        
-        # 2군 타오디엔 / 안푸 주요 업소
         ("타오디엔 K-식당", "식당", "2군 타오디엔", "Thao Dien Rd", 10.8040, 106.7380, "⭐⭐⭐⭐⭐"),
         ("서울 클리닉 (2군)", "병원/약국", "2군 타오디엔", "Xuan Thuy", 10.8055, 106.7395, "⭐⭐⭐⭐"),
         ("K-Mart 안푸점", "마트/쇼핑", "2군 타오디엔", "An Phu Song Hanh", 10.8015, 106.7350, "⭐⭐⭐⭐⭐"),
         ("정관장 타오디엔", "마트/쇼핑", "2군 타오디엔", "Thao Dien", 10.8035, 106.7370, "⭐⭐⭐⭐"),
         ("안푸 한인 유치원", "학원/교육", "2군 타오디엔", "An Phu 내", 10.8020, 106.7360, "⭐⭐⭐⭐"),
         ("타오디엔 카페 로얄", "카페/베이커리", "2군 타오디엔", "Nguyen Van Huong", 10.8070, 106.7410, "⭐⭐⭐⭐⭐"),
-        
-        # 1군 시내 주요 업소
         ("한식당 경복궁", "식당", "1군 시내", "Hai Ba Trung", 10.7795, 106.6990, "⭐⭐⭐⭐⭐"),
         ("서울 이발소 (1군)", "미용/스파", "1군 시내", "Le Thanh Ton", 10.7770, 106.7015, "⭐⭐⭐⭐"),
         ("교촌치킨 1군점", "식당", "1군 시내", "Dong Khoi", 10.7750, 106.7030, "⭐⭐⭐⭐⭐"),
         ("아리랑 한식당", "식당", "1군 시내", "Dong Du", 10.7745, 106.7040, "⭐⭐⭐⭐"),
-        
-        # 빈탄군 (빈홈 센트럴파크 주변) 주요 업소
         ("빈홈 K-치킨", "식당", "빈탄군(빈홈)", "Vinhomes Central Park", 10.7930, 106.7220, "⭐⭐⭐⭐⭐"),
         ("마켓브라더스 빈홈", "마트/쇼핑", "빈탄군(빈홈)", "Park 2 상가", 10.7940, 106.7210, "⭐⭐⭐⭐"),
         ("빈홈 한인 헤어", "미용/스파", "빈탄군(빈홈)", "Landmark 4", 10.7915, 106.7235, "⭐⭐⭐⭐⭐")
     ]
     
-    # 100개를 채우기 위해 샘플 데이터를 기반으로 가상 데이터 다량 추가 생성 (위도 경도 미세 조정)
     extended_facilities = list(raw_facilities)
     base_count = len(raw_facilities)
     for i in range(base_count, 100):
@@ -113,7 +104,6 @@ with tab1:
             "rating": stars
         })
         
-    # 기존 리스트 리스트도 딕셔너리 형태로 통일
     final_list = []
     for f in raw_facilities:
         final_list.append({"name": f[0], "category": f[1], "area": f[2], "address": f[3], "lat": f[4], "lon": f[5], "rating": f[6]})
@@ -122,7 +112,6 @@ with tab1:
         
     df = pd.DataFrame(final_list)
     
-    # 그랩 스타일 필터
     col_f1, col_f2 = st.columns(2)
     with col_f1:
         search_area = st.multiselect("지역 선택", df['area'].unique(), default=["7군 푸미흥", "2군 타오디엔"])
@@ -134,7 +123,6 @@ with tab1:
     st.subheader(f"📍 지도에 표시된 추천 한인 시설 ({len(filtered_df)}개 / 총 100개)")
     st.map(filtered_df, zoom=12, use_container_width=True)
     
-    # 카드형 스크롤 배치
     st.subheader("📋 시설 목록")
     cols = st.columns(4)
     for idx, row in filtered_df.reset_index().iterrows():
@@ -182,27 +170,19 @@ with tab2:
                 st.markdown("---")
 
 # ==========================================
-# 탭 3: 교민 광장 (북적북적한 대형 커뮤니티 구현)
+# 탭 3: 교민 광장
 # ==========================================
 with tab3:
     st.markdown('<div class="section-title">💬 실시간 교민 광장 (활성화됨)</div>', unsafe_allow_html=True)
     
-    # 실제 대형 카페나 톡방처럼 북적거리는 시뮬레이션 게시글 세팅
     if 'posts' not in st.session_state:
         st.session_state.posts = [
             {"tag": "📢 공지", "user": "운영자", "text": "2026년 상반기 호치민 한인회 주최 문화축제 일정 안내 드립니다.", "time": "2시간 전"},
             {"tag": "🍔 맛집", "user": "푸미흥맘", "text": "스카이가든 새로 생긴 브런치 카페 빵 진짜 맛있네요. 추천해요!", "time": "2시간 전"},
             {"tag": "🤝 중고거래", "user": "주재원3년차", "text": "[팝니다] 귀국으로 인해 LG 55인치 TV 스마트형 저렴하게 넘깁니다. 7군 직거래 가능.", "time": "3시간 전"},
-            {"tag": "❓ 질문", "user": "호치민새내기", "text": "베트남 운전면허증 공증받으려면 1군 영사관으로 바로 가면 되나요?", "time": "4시간 전"},
-            {"tag": "💼 구인구직", "user": "VinaTech", "text": "[구인] 2군 안푸 오피스에서 근무할 한국어/베트남어 가능 통번역 직원 구합니다.", "time": "5시간 전"},
-            {"tag": "🚗 교통", "user": "그랩마스터", "text": "지금 1군 응우옌후에 광장 주변 시위 및 행사 때문에 차 엄청 막힙니다. 우회하세요!", "time": "6시간 전"},
-            {"tag": "🏠 부동산", "user": "타오디엔자이", "text": "마스터리 타오디엔 2룸 풀옵션 월세 양도하거나 새로 계약하실 분 연락주세요.", "time": "8시간 전"},
-            {"tag": "🏥 의료", "user": "아프지말자", "text": "새벽에 애가 갑정치 열이 나는데 푸미흥 24시 열는 소아과 있을까요? ㅠㅠ", "time": "12시간 전"},
-            {"tag": "✈️ 여행", "user": "무이네조아", "text": "이번 주말에 무이네 지프투어 가는데 날씨 요정 제발 도와줬으면 좋겠네요.", "time": "1일 전"},
-            {"tag": "💬 잡담", "user": "사이공맥주", "text": "오늘 저녁에 퇴근하고 1군 부이비엔에서 가볍게 맥주 한잔하실 분 구합니다~", "time": "1일 전"}
+            {"tag": "❓ 질문", "user": "호치민새내기", "text": "베트남 운전면허증 공증받으려면 1군 영사관으로 바로 가면 되나요?", "time": "4시간 전"}
         ]
 
-    # 글쓰기 영역
     with st.container():
         c1, c2, c3 = st.columns([1, 4, 1])
         with c1:
@@ -218,20 +198,20 @@ with tab3:
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # 실제 대형 커뮤니티 타임라인 피드 스타일 출력
     for post in st.session_state.posts:
-        # 공지사항은 배경색을 다르게 주어 가시성 확보
-        bg_color = "#FFF2F2" if "공지" in post['tag'] else "white"
-        border_color = "#FF4D4D" if "공지" in post['tag'] else "#00B14F"
+        # 안전장치 추가: 예전 글처럼 'tag'가 없으면 '💬 잡담'으로 처리합니다.
+        post_tag = post.get('tag', '💬 잡담') 
+        bg_color = "#FFF2F2" if "공지" in post_tag else "white"
+        border_color = "#FF4D4D" if "공지" in post_tag else "#00B14F"
         
         st.markdown(f"""
             <div class="grab-card" style="padding: 1.2rem; margin-bottom: 0.8rem; border-left: 5px solid {border_color}; background-color: {bg_color};">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                    <span style="font-weight: bold; color: {border_color}; font-size: 0.9rem;">{post['tag']}</span>
+                    <span style="font-weight: bold; color: {border_color}; font-size: 0.9rem;">{post_tag}</span>
                     <span style="color: #999; font-size: 0.8rem;">⏰ {post['time']}</span>
                 </div>
                 <div style="font-size: 1rem; color: #333; margin-bottom: 5px;">{post['text']}</div>
-                <div style="font-size: 0.8rem; color: #666;">👤 작성자: <b>{post['user']}</b></div>
+                <div style="font-size: 0.8rem; color: #666;">👤 작성자: <b>{post.get('user', '익명')}</b></div>
             </div>
         """, unsafe_allow_html=True)
 
