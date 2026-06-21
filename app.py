@@ -49,7 +49,7 @@ def get_local_directory_data(url):
 # ==========================================
 # 실행 테스트 (원하는 사이트 주소로 바꿔서 테스트하세요)
 # ==========================================
-target_url = "https://example-korean-magazine.com/directory/restaurant" # 긁어오고 싶은 실제 주소 입력
+target_url = "https://chaovietnam.co.kr/" # 긁어오고 싶은 실제 주소 입력
 result_df = get_local_directory_data(target_url)
 
 if result_df is not None:
