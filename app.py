@@ -12,172 +12,222 @@ else:
     model = None
 
 # ==========================================
-# Grab Style Custom CSS
+# 🎨 삼성 가이드북 스타일 Custom CSS
 # ==========================================
 def local_css():
     st.markdown("""
         <style>
-        .stApp { background-color: #F7F9FC; }
-        .main-header {
-            background-color: #00B14F;
-            padding: 2rem;
-            border-radius: 15px;
+        /* 전체 배경색 깔끔하게 */
+        .stApp { background-color: #F4F6F9; }
+        
+        /* 메인 타이틀 영역 (깔끔하고 모던하게) */
+        .samsung-header {
+            text-align: center;
+            padding: 3rem 0 2rem 0;
+            background-color: transparent;
+        }
+        .samsung-header h1 {
+            color: #1A1A1A !important;
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .samsung-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* 탭 디자인 수정 */
+        .stTabs [data-baseweb="tab-list"] { gap: 10px; justify-content: center; }
+        .stTabs [data-baseweb="tab"] { border-radius: 20px 20px 0 0; }
+
+        /* 컬러풀한 카드 UI */
+        .color-card {
+            border-radius: 24px;
+            padding: 25px 20px;
             color: white;
             text-align: center;
-            margin-bottom: 2rem;
+            height: 260px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-bottom: 1.5rem;
         }
-        .main-header h1 { color: white !important; font-weight: 800; }
-        .section-title {
-            color: #1C1C1C; font-size: 1.5rem; font-weight: 700;
-            margin-top: 2rem; margin-bottom: 1rem;
-            border-left: 5px solid #00B14F; padding-left: 10px;
+        .color-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
         }
-        .grab-card {
-            background-color: white; padding: 1.5rem; border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); margin-bottom: 1rem;
+        
+        /* 카드 내부 텍스트 및 요소 */
+        .card-tag {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            backdrop-filter: blur(5px);
+            margin-bottom: 15px;
+            display: inline-block;
         }
-        </style>
-    """, unsafe_allow_html=True) # <- 이전 에러 원인이었던 부분 깔끔하게 수정됨!
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin: 0 0 5px 0;
+            word-break: keep-all;
+        }
+        .card-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        .card-icon {
+            font-size: 4rem;
+            margin-top: auto;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
 
-st.set_page_config(page_title="HCM Grab Community", page_icon="🇻🇳", layout="wide")
+        /* 그라데이션 배경색 (카테고리별 매칭) */
+        .theme-blue { background: linear-gradient(135deg, #3A7BD5, #3A6073); } /* 교육 */
+        .theme-purple { background: linear-gradient(135deg, #8E2DE2, #4A00E0); } /* 미용 */
+        .theme-pink { background: linear-gradient(135deg, #FF416C, #FF4B2B); } /* 카페 */
+        .theme-orange { background: linear-gradient(135deg, #FF8008, #FFC837); } /* 식당 */
+        .theme-green { background: linear-gradient(135deg, #11998E, #38EF7D); } /* 병원 */
+        .theme-dark { background: linear-gradient(135deg, #2C3E50, #000000); } /* 마트 */
+        </style>
+    """, unsafe_allow_html=True)
+
+st.set_page_config(page_title="HCM Community", page_icon="🇻🇳", layout="wide")
 local_css()
 
-# 메인 헤더
+# 메인 헤더 (깔끔한 텍스트형)
 st.markdown("""
-    <div class="main-header">
-        <h1>🇻🇳 호치민 한인 통합 커뮤니티</h1>
-        <p>Grab처럼 편리한 정보와 똑똑한 제미니 AI 가이드를 만나보세요.</p>
+    <div class="samsung-header">
+        <h1>호치민 교민 통합 가이드북</h1>
+        <p>생활 정보의 기초부터 심화까지 한 번에</p>
     </div>
 """, unsafe_allow_html=True)
 
-# 탭 4개 구성
-tab1, tab2, tab3, tab4 = st.tabs(["🗺️ 주변 추천 시설", "🔍 실시간 무료 검색", "🤖 AI 호치민 가이드", "💬 교민 광장"])
+# 탭 구성
+tab1, tab2, tab3, tab4 = st.tabs(["🗺️ 한인 시설 가이드", "🔍 실시간 로컬 검색", "🤖 AI 비서", "💬 소통 라운지"])
+
+# --- 카드 스타일 매퍼 함수 ---
+def get_card_style(category):
+    styles = {
+        "식당": {"class": "theme-orange", "icon": "🍲"},
+        "카페/베이커리": {"class": "theme-pink", "icon": "☕"},
+        "미용/스파": {"class": "theme-purple", "icon": "💆‍♀️"},
+        "병원/약국": {"class": "theme-green", "icon": "🏥"},
+        "학원/교육": {"class": "theme-blue", "icon": "📚"},
+        "마트/쇼핑": {"class": "theme-dark", "icon": "🛒"},
+        "식당 (Restaurant)": {"class": "theme-orange", "icon": "🍕"},
+        "카페 (Cafe)": {"class": "theme-pink", "icon": "🥤"},
+        "병원 (Hospital)": {"class": "theme-green", "icon": "🩺"},
+        "약국 (Pharmacy)": {"class": "theme-green", "icon": "💊"}
+    }
+    return styles.get(category, {"class": "theme-blue", "icon": "📍"})
 
 # ==========================================
-# 탭 1: 추천 시설 데이터 (기존 100개 유지)
+# 탭 1: 추천 시설 데이터 (4열 그리드 카드)
 # ==========================================
 with tab1:
-    st.markdown('<div class="section-title">🗺️ 주변 추천 한인 시설</div>', unsafe_allow_html=True)
+    st.write("### 📌 필수 한인 인프라")
     
     raw_facilities = [
-        ("명동칼국수", "식당", "7군 푸미흥", "Sky Garden 3차", 10.7314, 106.7055, "⭐⭐⭐⭐⭐"),
-        ("스타 어학원", "학원/교육", "7군 푸미흥", "Happy Valley", 10.7285, 106.7020, "⭐⭐⭐⭐"),
-        ("타오디엔 K-식당", "식당", "2군 타오디엔", "Thao Dien Rd", 10.8040, 106.7380, "⭐⭐⭐⭐⭐"),
-        ("한식당 경복궁", "식당", "1군 시내", "Hai Ba Trung", 10.7795, 106.6990, "⭐⭐⭐⭐⭐"),
-        ("빈홈 K-치킨", "식당", "빈탄군(빈홈)", "Vinhomes Central Park", 10.7930, 106.7220, "⭐⭐⭐⭐⭐")
+        ("명동칼국수", "식당", "7군 푸미흥", "Sky Garden 3차", 10.7314, 106.7055),
+        ("스타 어학원", "학원/교육", "7군 푸미흥", "Happy Valley", 10.7285, 106.7020),
+        ("타오디엔 K-식당", "식당", "2군 타오디엔", "Thao Dien Rd", 10.8040, 106.7380),
+        ("K-Mart 안푸점", "마트/쇼핑", "2군 타오디엔", "An Phu Song Hanh", 10.8015, 106.7350),
+        ("한식당 경복궁", "식당", "1군 시내", "Hai Ba Trung", 10.7795, 106.6990),
+        ("서울 이발소", "미용/스파", "1군 시내", "Le Thanh Ton", 10.7770, 106.7015),
+        ("빈홈 K-치킨", "식당", "빈탄군(빈홈)", "Vinhomes Central Park", 10.7930, 106.7220),
+        ("푸미흥 한인병원", "병원/약국", "7군 푸미흥", "Nguyen Van Linh", 10.7295, 106.7035)
     ]
     
-    extended_facilities = list(raw_facilities)
-    base_count = len(raw_facilities)
-    for i in range(base_count, 100):
-        ref = raw_facilities[i % base_count]
-        offset_lat = (i * 0.0003) % 0.015 - 0.0075
-        offset_lon = (i * 0.0004) % 0.015 - 0.0075
-        stars = "⭐⭐⭐⭐⭐" if i % 3 == 0 else "⭐⭐⭐⭐"
-        extended_facilities.append({
-            "name": f"{ref[0]} {i//base_count + 1}호점",
-            "category": ref[1],
-            "area": ref[2],
-            "address": f"{ref[3]} 인근",
-            "lat": ref[4] + offset_lat,
-            "lon": ref[5] + offset_lon,
-            "rating": stars
-        })
+    # 4열 그리드 렌더링
+    cols = st.columns(4)
+    for i, item in enumerate(raw_facilities):
+        name, cat, area, address, lat, lon = item
+        style = get_card_style(cat)
         
-    final_list = []
-    for f in raw_facilities:
-        final_list.append({"name": f[0], "category": f[1], "area": f[2], "address": f[3], "lat": f[4], "lon": f[5], "rating": f[6]})
-    for f in extended_facilities[base_count:]:
-        final_list.append(f)
-        
-    df = pd.DataFrame(final_list)
-    st.map(df, zoom=12, use_container_width=True)
+        with cols[i % 4]:
+            st.markdown(f"""
+                <div class="color-card {style['class']}">
+                    <div class="card-tag">{cat} 가이드</div>
+                    <div class="card-title">{name}</div>
+                    <div class="card-subtitle">📍 {area}</div>
+                    <div class="card-icon">{style['icon']}</div>
+                </div>
+            """, unsafe_allow_html=True)
 
 # ==========================================
-# 탭 2: 🔍 실시간 무료 지도 검색 (OpenStreetMap API)
+# 탭 2: 실시간 무료 지도 검색 (동일한 카드 UI 적용)
 # ==========================================
 with tab2:
-    st.markdown('<div class="section-title">🔍 실시간 호치민 주변 검색 (카드 등록 NO!)</div>', unsafe_allow_html=True)
-    st.write("구글 API 대신, **100% 무료 오픈소스 지도**에서 실시간으로 데이터를 긁어옵니다.")
+    st.write("### 🔍 실시간 데이터 검색")
     
     col1, col2 = st.columns(2)
     with col1:
-        target_area = st.selectbox("어디를 검색할까요?", ["1군 시내", "2군 타오디엔", "7군 푸미흥"])
+        target_area = st.selectbox("탐색할 지역", ["1군 시내", "2군 타오디엔", "7군 푸미흥"])
     with col2:
-        target_category = st.selectbox("무엇을 찾으시나요?", ["식당 (Restaurant)", "카페 (Cafe)", "병원 (Hospital)", "약국 (Pharmacy)"])
+        target_category = st.selectbox("탐색할 분야", ["식당 (Restaurant)", "카페 (Cafe)", "병원 (Hospital)", "약국 (Pharmacy)"])
 
-    if st.button("무료 API로 긁어오기", use_container_width=True):
-        with st.spinner("전 세계 무료 지도 데이터베이스에 접속 중입니다... ⏳"):
-            # 1. 지역별 중심 좌표
-            locations = {
-                "1군 시내": (10.7756, 106.7019),
-                "2군 타오디엔": (10.8045, 106.7368),
-                "7군 푸미흥": (10.7295, 106.7055)
-            }
+    if st.button("실시간 탐색 시작", use_container_width=True):
+        with st.spinner("해당 지역의 데이터를 분석 중입니다..."):
+            locations = {"1군 시내": (10.7756, 106.7019), "2군 타오디엔": (10.8045, 106.7368), "7군 푸미흥": (10.7295, 106.7055)}
             lat, lon = locations[target_area]
-
-            # 2. 카테고리 태그
-            tags = {
-                "식당 (Restaurant)": "restaurant",
-                "카페 (Cafe)": "cafe",
-                "병원 (Hospital)": "hospital",
-                "약국 (Pharmacy)": "pharmacy"
-            }
+            tags = {"식당 (Restaurant)": "restaurant", "카페 (Cafe)": "cafe", "병원 (Hospital)": "hospital", "약국 (Pharmacy)": "pharmacy"}
             amenity = tags[target_category]
 
-            # 3. Overpass API 무료 호출 (반경 2km 이내 20개 추출)
             overpass_url = "http://overpass-api.de/api/interpreter"
-            query = f"""
-            [out:json];
-            (
-              node["amenity"="{amenity}"](around:2000,{lat},{lon});
-            );
-            out 20;
-            """
+            query = f'[out:json];(node["amenity"="{amenity}"](around:2000,{lat},{lon}););out 8;'
             
             try:
                 response = requests.get(overpass_url, params={'data': query})
                 data = response.json()
                 
                 if 'elements' in data and len(data['elements']) > 0:
-                    st.success(f"총 {len(data['elements'])}개의 장소를 성공적으로 찾았습니다!")
+                    st.success(f"성공적으로 {len(data['elements'])}개의 장소를 찾았습니다.")
                     
-                    map_data = []
-                    for el in data['elements']:
-                        name = el.get('tags', {}).get('name', '이름 없는 장소 (로컬)')
-                        map_data.append({"name": name, "lat": el['lat'], "lon": el['lon']})
+                    # 검색 결과도 4열 카드 그리드로 표시
+                    res_cols = st.columns(4)
+                    style = get_card_style(target_category)
+                    
+                    for i, el in enumerate(data['elements'][:8]): # 최대 8개만 표시
+                        name = el.get('tags', {}).get('name', '로컬 장소')
+                        if len(name) > 15: name = name[:15] + "..." # 이름이 너무 길면 자르기
                         
-                    df_realtime = pd.DataFrame(map_data)
-                    st.map(df_realtime, zoom=14, use_container_width=True)
-                    
-                    cols = st.columns(3)
-                    for i, row in df_realtime.iterrows():
-                        with cols[i % 3]:
-                            st.markdown(f'''
-                                <div class="grab-card" style="min-height: 80px; padding: 1rem;">
-                                    <h5 style="margin:0; color:#00B14F; font-size:1rem;">📍 {row["name"]}</h5>
+                        with res_cols[i % 4]:
+                            st.markdown(f"""
+                                <div class="color-card {style['class']}">
+                                    <div class="card-tag">주변 탐색 결과</div>
+                                    <div class="card-title">{name}</div>
+                                    <div class="card-icon">{style['icon']}</div>
                                 </div>
-                            ''', unsafe_allow_html=True)
+                            """, unsafe_allow_html=True)
                 else:
-                    st.warning("이 주변에는 해당 카테고리의 장소가 아직 등록되지 않았네요!")
+                    st.warning("해당 조건의 장소가 없습니다.")
             except Exception as e:
-                st.error(f"데이터를 긁어오지 못했습니다: {e}")
+                st.error("데이터 로딩 실패")
 
 # ==========================================
-# 탭 3: 제미니 AI 호치민 가이드
+# 탭 3: 제미니 AI / 탭 4: 교민 광장
 # ==========================================
 with tab3:
-    st.markdown('<div class="section-title">🤖 제미니 AI 챗봇 가이드</div>', unsafe_allow_html=True)
+    st.write("### 🤖 호치민 스마트 비서")
     if model is None:
-        st.warning("⚠️ 제미니 API 키를 설정해 주세요.")
+        st.warning("제미니 API 키를 설정해 주세요.")
     else:
         if "chat_history" not in st.session_state:
             st.session_state.chat_history = []
             
-        user_question = st.text_input("AI에게 질문하기:", placeholder="예: 푸미흥 근처 맛집이나 가볼 만한 곳 추천해줘")
-        if st.button("질문 보내기"):
+        user_question = st.text_input("궁금한 점을 물어보세요:")
+        if st.button("질문하기"):
             if user_question:
-                with st.spinner("생각 중..."):
+                with st.spinner("답변을 작성 중입니다..."):
                     try:
                         response = model.generate_content(f"호치민 가이드로서 답변해줘: {user_question}")
                         st.session_state.chat_history.append(("User", user_question))
@@ -187,36 +237,31 @@ with tab3:
                         
         for role, text in reversed(st.session_state.chat_history):
             if role == "User":
-                st.markdown(f"**👤 나:** {text}")
+                st.info(f"**질문:** {text}")
             else:
-                st.markdown(f"**🤖 제미니:** {text}")
-                st.markdown("---")
+                st.success(f"**답변:** {text}")
 
-# ==========================================
-# 탭 4: 교민 광장
-# ==========================================
 with tab4:
-    st.markdown('<div class="section-title">💬 실시간 교민 광장</div>', unsafe_allow_html=True)
+    st.write("### 💬 소통 라운지")
     if 'posts' not in st.session_state:
-        st.session_state.posts = [{"tag": "📢 공지", "user": "운영자", "text": "안전하게 커뮤니티를 이용해 주세요.", "time": "방금 전"}]
+        st.session_state.posts = [{"tag": "📢 공지", "user": "운영자", "text": "가이드북 라운지에 오신 것을 환영합니다.", "time": "방금 전"}]
 
     c1, c2, c3 = st.columns([1, 4, 1])
     with c1:
-        new_tag = st.selectbox("카테고리", ["❓ 질문", "🍔 맛집", "🤝 중고거래"])
+        new_tag = st.selectbox("주제", ["❓ 질문", "🍔 맛집", "🤝 중고거래", "💬 잡담"])
     with c2:
-        new_post_text = st.text_input("글 내용 입력", key="comm_input_large")
+        new_post_text = st.text_input("내용 입력", label_visibility="collapsed")
     with c3:
-        if st.button("게시글 등록", use_container_width=True):
+        if st.button("글 남기기", use_container_width=True):
             if new_post_text:
                 st.session_state.posts.insert(0, {"tag": new_tag, "user": "익명교민", "text": new_post_text, "time": "방금 전"})
                 st.rerun()
 
     for post in st.session_state.posts:
-        post_tag = post.get('tag', '💬 잡담') 
-        bg_color = "#FFF2F2" if "공지" in post_tag else "white"
+        bg = "#F8D7DA" if "공지" in post['tag'] else "white"
         st.markdown(f"""
-            <div class="grab-card" style="padding: 1.2rem; margin-bottom: 0.8rem; border-left: 5px solid #00B14F; background-color: {bg_color};">
-                <span style="font-weight: bold; color: #00B14F;">{post_tag}</span>
-                <div style="margin-top: 5px;">{post['text']}</div>
+            <div style="background-color:{bg}; padding:20px; border-radius:15px; margin-bottom:15px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+                <span style="background-color:#333; color:white; padding:4px 10px; border-radius:10px; font-size:0.8rem;">{post['tag']}</span>
+                <p style="margin:10px 0 0 0; color:#333; font-size:1.1rem;">{post['text']}</p>
             </div>
         """, unsafe_allow_html=True)
